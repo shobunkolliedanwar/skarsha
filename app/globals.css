@@ -1,0 +1,110 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: "Fraunces", serif;
+  --font-body: "Inter", sans-serif;
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #07070c;
+  color: #ECE9F5;
+  font-family: var(--font-body);
+}
+
+::selection {
+  background: #C9A24C;
+  color: #0B0B14;
+}
+
+/* Portal card glass */
+.portal-card {
+  position: relative;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(234, 209, 144, 0.14);
+  background: linear-gradient(160deg, rgba(22,22,37,0.9), rgba(11,11,20,0.9));
+  backdrop-filter: blur(6px);
+  transform-style: preserve-3d;
+  perspective: 800px;
+  transition: transform 0.45s cubic-bezier(0.16,1,0.3,1), border-color 0.45s ease, box-shadow 0.45s ease;
+}
+
+.portal-card:hover {
+  transform: translateY(-6px) rotateX(1.5deg);
+  border-color: rgba(234, 209, 144, 0.45);
+  box-shadow: 0 24px 60px -20px rgba(201, 162, 76, 0.35);
+}
+
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+  mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+}
+
+.faq-item[open] summary .faq-chevron {
+  transform: rotate(180deg);
+}
+
+.faq-item summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.gilt-text {
+  background: linear-gradient(100deg, #EAD190, #C9A24C 45%, #F3E3B8 60%, #A9823A);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.shimmer-line {
+  background: linear-gradient(90deg, transparent, rgba(234,209,144,0.6), transparent);
+  background-size: 200% 100%;
+}
+
+.noise-overlay {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23n)" opacity="0.05"/></svg>');
+  opacity: 0.5;
+  mix-blend-mode: overlay;
+}
+
+/* Admin */
+.admin-shell {
+  background: #0B0B14;
+}
+
+.admin-card {
+  background: #10101C;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 1rem;
+}
+
+input, select, textarea {
+  outline: none;
+}
+
+.focus-ring:focus-visible {
+  outline: 2px solid #C9A24C;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
