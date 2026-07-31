@@ -1,9 +1,29 @@
-import { Crown, LogOut, User as UserIcon } from "lucide-react";
+import { Bookmark, Crown, LogOut, User as UserIcon } from "lucide-react";
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/get-current-user";
+import { supabaseServer } from "@/lib/supabase/server";
 import { LogoutButton } from "@/components/akun/LogoutButton";
 
 export const revalidate = 0;
+
+async function getBookmarkedLinks(userId: string) {
+  const supabase = supabaseServer();
+  const { data } = await supabase
+    .from("bookmarks")
+    .select("id, links(id, name, url, description)")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+
+  const rows = (data ?? []) as Array<{
+    id: string;
+    links: { id: string; name: string; url: string; description: string | null }[] | null;
+  }>;
+
+  return rows.map((row) => ({
+    id: row.id,
+    link: Array.isArray(row.links) ? row.links[0] ?? null : row.links,
+  }));
+}
 
 export default async function AkunPage() {
   const user = await getCurrentUser();
@@ -13,6 +33,8 @@ export default async function AkunPage() {
   if (!user) {
     return null;
   }
+
+  const bookmarks = user.is_premium ? await getBookmarkedLinks(user.id) : [];
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-ink-900 px-6 py-16">
@@ -60,10 +82,41 @@ export default async function AkunPage() {
           </p>
         )}
 
-        <p className="mt-6 text-xs text-white/30">
-          Fitur bookmark, riwayat, dan notifikasi akan muncul di sini pada tahap
-          berikutnya.
-        </p>
+        {user.is_premium ? (
+          <div className="mt-6">
+            <p className="mb-2 flex items-center gap-1.5 text-xs uppercase tracking-[0.15em] text-white/35">
+              <Bookmark size={12} /> Link Tersimpan
+            </p>
+            {bookmarks.length === 0 ? (
+              <p className="rounded-lg border border-dashed border-white/10 px-4 py-4 text-center text-xs text-white/30">
+                Belum ada link yang disimpan. Klik ikon bookmark di halaman
+                Jelajahi untuk menyimpannya.
+              </p>
+            ) : (
+              <ul className="flex flex-col gap-2">
+                {bookmarks
+                  .filter((b) => b.link)
+                  .map((b) => (
+                    <li key={b.id}>
+                      <a
+                        href={`/lanjut/${b.link!.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="focus-ring block rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2.5 text-sm text-white/80 transition hover:border-white/[0.16] hover:bg-white/[0.05]"
+                      >
+                        {b.link!.name}
+                      </a>
+                    </li>
+                  ))}
+              </ul>
+            )}
+          </div>
+        ) : (
+          <p className="mt-6 rounded-lg border border-dashed border-white/10 px-4 py-4 text-center text-xs text-white/30">
+            Upgrade ke Premium buat simpan link favorit &amp; belajar tanpa
+            iklan.
+          </p>
+        )}
 
         <LogoutButton />
       </div>

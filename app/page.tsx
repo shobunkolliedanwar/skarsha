@@ -8,6 +8,7 @@ import { Testimonials } from "@/components/landing/Testimonials";
 import { FAQ } from "@/components/landing/FAQ";
 import { CTASection } from "@/components/landing/CTASection";
 import { Footer } from "@/components/landing/Footer";
+import { BannerAd } from "@/components/redirect/BannerAd";
 import type { CategoryWithLinks } from "@/lib/types";
 
 export const revalidate = 0;
@@ -44,6 +45,7 @@ export default async function LandingPage() {
       <Navbar />
       <Hero totalCategories={categories.length} totalLinks={totalLinks} />
       <Marquee />
+      <BannerAd />
       <FeatureGrid />
       <CategoryGrid categories={categories} />
       <Testimonials />

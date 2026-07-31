@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { ChevronDown, Menu, X, User as UserIcon } from "lucide-react";
 import { resolveIcon } from "@/lib/icon-map";
 import type { Category } from "@/lib/types";
 
@@ -13,16 +13,24 @@ const STATIC_LINKS = [
   { href: "/kontak", label: "Kontak" },
 ];
 
+type SessionUser = { full_name: string | null; email: string } | null;
+
 export function Navbar() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [user, setUser] = useState<SessionUser>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch("/api/categories")
       .then((res) => res.json())
       .then((body) => setCategories(body.data ?? []))
+      .catch(() => {});
+
+    fetch("/api/user/me")
+      .then((res) => res.json())
+      .then((body) => setUser(body.user ?? null))
       .catch(() => {});
   }, []);
 
@@ -95,6 +103,33 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
+
+          <div className="ml-2 flex items-center gap-2 border-l border-white/[0.08] pl-3">
+            {user ? (
+              <Link
+                href="/akun"
+                className="focus-ring flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-white/70 transition hover:text-white"
+              >
+                <UserIcon size={15} />
+                {user.full_name || "Akun"}
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/masuk"
+                  className="focus-ring rounded-lg px-3 py-2 text-sm text-white/60 transition hover:text-white"
+                >
+                  Masuk
+                </Link>
+                <Link
+                  href="/daftar"
+                  className="focus-ring rounded-lg bg-gradient-to-r from-gilt-400 to-gilt-500 px-3.5 py-2 text-sm font-medium text-ink-950 transition hover:opacity-90"
+                >
+                  Daftar
+                </Link>
+              </>
+            )}
+          </div>
         </nav>
 
         <button
@@ -133,6 +168,33 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
+          <div className="my-2 h-px bg-white/[0.06]" />
+          {user ? (
+            <Link
+              href="/akun"
+              className="rounded-lg px-3 py-2 text-sm text-white/70"
+              onClick={() => setMobileOpen(false)}
+            >
+              Akun Saya
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/masuk"
+                className="rounded-lg px-3 py-2 text-sm text-white/70"
+                onClick={() => setMobileOpen(false)}
+              >
+                Masuk
+              </Link>
+              <Link
+                href="/daftar"
+                className="rounded-lg px-3 py-2 text-sm font-medium text-gilt-400"
+                onClick={() => setMobileOpen(false)}
+              >
+                Daftar Akun
+              </Link>
+            </>
+          )}
         </nav>
       )}
     </header>

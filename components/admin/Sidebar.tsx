@@ -3,12 +3,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, FolderTree, Link2, LogOut, ExternalLink, Newspaper, Mail, Settings } from "lucide-react";
+import { LayoutDashboard, FolderTree, Link2, LogOut, ExternalLink, Newspaper, Mail, Settings, Users, Receipt } from "lucide-react";
 
 const NAV = [
   { href: "/admin", label: "Ringkasan", icon: LayoutDashboard },
   { href: "/admin/categories", label: "Kategori", icon: FolderTree },
   { href: "/admin/links", label: "Sub Kategori", icon: Link2 },
+  { href: "/admin/users", label: "Pengguna", icon: Users },
+  { href: "/admin/transactions", label: "Transaksi", icon: Receipt },
   { href: "/admin/blog", label: "Blog", icon: Newspaper },
   { href: "/admin/messages", label: "Pesan Masuk", icon: Mail },
   { href: "/admin/settings", label: "Pengaturan", icon: Settings },

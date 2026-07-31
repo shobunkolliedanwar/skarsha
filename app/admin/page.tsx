@@ -1,4 +1,4 @@
-import { FolderTree, Link2, MousePointerClick, TrendingUp } from "lucide-react";
+import { FolderTree, Link2, MousePointerClick, TrendingUp, Users, Crown, Wallet } from "lucide-react";
 import { supabaseServer } from "@/lib/supabase/server";
 import { StatsCard } from "@/components/admin/StatsCard";
 
@@ -7,13 +7,25 @@ export const revalidate = 0;
 async function getDashboardData() {
   const supabase = supabaseServer();
 
-  const [{ count: categoryCount }, { data: links }] = await Promise.all([
+  const [
+    { count: categoryCount },
+    { data: links },
+    { count: userCount },
+    { count: premiumCount },
+    { data: paidTransactions },
+  ] = await Promise.all([
     supabase.from("categories").select("*", { count: "exact", head: true }),
     supabase
       .from("links")
       .select("id, name, click_count, category_id, categories(name)")
       .order("click_count", { ascending: false })
       .limit(8),
+    supabase.from("users").select("*", { count: "exact", head: true }),
+    supabase
+      .from("users")
+      .select("*", { count: "exact", head: true })
+      .eq("is_premium", true),
+    supabase.from("premium_transactions").select("amount").eq("status", "paid"),
   ]);
 
   const totalClicks = (links ?? []).reduce((sum, l) => sum + (l.click_count ?? 0), 0);
@@ -21,16 +33,32 @@ async function getDashboardData() {
     .from("links")
     .select("*", { count: "exact", head: true });
 
+  const totalRevenue = (paidTransactions ?? []).reduce(
+    (sum, t) => sum + (t.amount ?? 0),
+    0
+  );
+
   return {
     categoryCount: categoryCount ?? 0,
     linkCount: linkCount ?? 0,
     totalClicks,
     topLinks: links ?? [],
+    userCount: userCount ?? 0,
+    premiumCount: premiumCount ?? 0,
+    totalRevenue,
   };
 }
 
 export default async function AdminDashboardPage() {
-  const { categoryCount, linkCount, totalClicks, topLinks } = await getDashboardData();
+  const {
+    categoryCount,
+    linkCount,
+    totalClicks,
+    topLinks,
+    userCount,
+    premiumCount,
+    totalRevenue,
+  } = await getDashboardData();
 
   return (
     <div className="flex flex-col gap-8">
@@ -45,6 +73,17 @@ export default async function AdminDashboardPage() {
         <StatsCard label="Total Kategori" value={categoryCount} icon={FolderTree} accent="#C9A24C" />
         <StatsCard label="Total Sub Kategori" value={linkCount} icon={Link2} accent="#7C6CF6" />
         <StatsCard label="Total Klik" value={totalClicks} icon={MousePointerClick} accent="#3FCFB4" />
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <StatsCard label="Total Pengguna" value={userCount} icon={Users} accent="#5B8DEF" />
+        <StatsCard label="Pengguna Premium" value={premiumCount} icon={Crown} accent="#C9A24C" />
+        <StatsCard
+          label="Total Pendapatan"
+          value={`Rp ${totalRevenue.toLocaleString("id-ID")}`}
+          icon={Wallet}
+          accent="#3FCFB4"
+        />
       </div>
 
       <div className="admin-card p-6">

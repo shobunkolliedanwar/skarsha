@@ -5,6 +5,7 @@ import { Search } from "lucide-react";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { PortalLink } from "@/components/landing/PortalLink";
+import { BannerAd } from "@/components/redirect/BannerAd";
 import { resolveIcon } from "@/lib/icon-map";
 import type { Category, LinkItem } from "@/lib/types";
 
@@ -75,6 +76,10 @@ export default function JelajahiPage() {
               </option>
             ))}
           </select>
+        </div>
+
+        <div className="-mx-6">
+          <BannerAd />
         </div>
 
         {loading ? (

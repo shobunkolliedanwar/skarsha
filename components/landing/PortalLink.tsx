@@ -1,13 +1,37 @@
-import { ArrowUpRight } from "lucide-react";
+"use client";
+
+import { ArrowUpRight, Bookmark } from "lucide-react";
 import { resolveIcon } from "@/lib/icon-map";
+import { useBookmarks } from "@/lib/bookmark-context";
 import type { LinkItem } from "@/lib/types";
 
 export function PortalLink({ link, accent }: { link: LinkItem; accent: string }) {
   const Icon = resolveIcon(link.icon);
+  const { isLoggedIn, isPremium, bookmarkedIds, toggleBookmark } = useBookmarks();
+  const isBookmarked = bookmarkedIds.has(link.id);
+
+  async function handleBookmarkClick(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!isLoggedIn) {
+      window.location.href = "/masuk";
+      return;
+    }
+
+    if (!isPremium) {
+      window.alert(
+        "Fitur bookmark khusus untuk pengguna Premium. Upgrade dulu yuk di halaman /premium."
+      );
+      return;
+    }
+
+    await toggleBookmark(link.id);
+  }
 
   return (
     <a
-      href={`/api/click/${link.id}`}
+      href={`/lanjut/${link.id}`}
       target="_blank"
       rel="noopener noreferrer"
       className="focus-ring group relative z-10 flex items-start gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 transition-all duration-300 hover:border-white/[0.16] hover:bg-white/[0.05]"
@@ -32,6 +56,17 @@ export function PortalLink({ link, accent }: { link: LinkItem; accent: string })
           </span>
         )}
       </span>
+      <button
+        onClick={handleBookmarkClick}
+        aria-label={isBookmarked ? "Hapus bookmark" : "Simpan bookmark"}
+        className="focus-ring shrink-0 rounded-lg p-1.5 text-white/25 transition hover:bg-white/[0.06] hover:text-gilt-400"
+      >
+        <Bookmark
+          size={15}
+          fill={isBookmarked ? "currentColor" : "none"}
+          className={isBookmarked ? "text-gilt-400" : ""}
+        />
+      </button>
     </a>
   );
 }
