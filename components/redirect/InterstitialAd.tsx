@@ -9,9 +9,11 @@ const COUNTDOWN_SECONDS = 5;
 export function InterstitialAd({
   targetUrl,
   linkName,
+  remainingOpens,
 }: {
   targetUrl: string;
   linkName: string;
+  remainingOpens?: number;
 }) {
   const [secondsLeft, setSecondsLeft] = useState(COUNTDOWN_SECONDS);
 
@@ -53,6 +55,13 @@ export function InterstitialAd({
       </div>
 
       <AdSlot />
+
+      {typeof remainingOpens === "number" && (
+        <p className="text-xs text-white/35">
+          Sisa <span className="text-gilt-400">{remainingOpens}</span> kali buka
+          link gratis
+        </p>
+      )}
 
       {secondsLeft > 0 ? (
         <p className="text-sm text-white/50">

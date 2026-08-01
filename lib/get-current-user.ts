@@ -9,7 +9,10 @@ import type { User } from "@/lib/types";
  * yang sedang login, lengkap dengan status premium efektif.
  */
 export async function getCurrentUser(): Promise<
-  (Pick<User, "id" | "email" | "full_name" | "premium_plan" | "premium_expires_at"> & {
+  (Pick<
+    User,
+    "id" | "email" | "full_name" | "premium_plan" | "premium_expires_at" | "free_link_opens"
+  > & {
     is_premium: boolean;
   }) | null
 > {
@@ -22,7 +25,9 @@ export async function getCurrentUser(): Promise<
   const supabase = supabaseServer();
   const { data: user, error } = await supabase
     .from("users")
-    .select("id, email, full_name, is_premium, premium_plan, premium_expires_at")
+    .select(
+      "id, email, full_name, is_premium, premium_plan, premium_expires_at, free_link_opens"
+    )
     .eq("id", session.sub)
     .maybeSingle();
 

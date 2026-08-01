@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpRight, Bookmark } from "lucide-react";
+import { ArrowUpRight, Bookmark, Lock } from "lucide-react";
 import { resolveIcon } from "@/lib/icon-map";
 import { useBookmarks } from "@/lib/bookmark-context";
 import type { LinkItem } from "@/lib/types";
@@ -29,11 +29,19 @@ export function PortalLink({ link, accent }: { link: LinkItem; accent: string })
     await toggleBookmark(link.id);
   }
 
+  function handleLinkClick(e: React.MouseEvent) {
+    if (!isLoggedIn) {
+      e.preventDefault();
+      window.location.href = `/masuk?next=/lanjut/${link.id}`;
+    }
+  }
+
   return (
     <a
       href={`/lanjut/${link.id}`}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={handleLinkClick}
       className="focus-ring group relative z-10 flex items-start gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 transition-all duration-300 hover:border-white/[0.16] hover:bg-white/[0.05]"
     >
       <span
@@ -45,10 +53,14 @@ export function PortalLink({ link, accent }: { link: LinkItem; accent: string })
       <span className="min-w-0 flex-1">
         <span className="flex items-center gap-1.5 font-medium text-white/90">
           {link.name}
-          <ArrowUpRight
-            size={14}
-            className="shrink-0 text-white/30 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-white/70"
-          />
+          {isLoggedIn ? (
+            <ArrowUpRight
+              size={14}
+              className="shrink-0 text-white/30 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-white/70"
+            />
+          ) : (
+            <Lock size={12} className="shrink-0 text-white/25" />
+          )}
         </span>
         {link.description && (
           <span className="mt-0.5 block truncate text-xs text-white/45">
@@ -56,17 +68,19 @@ export function PortalLink({ link, accent }: { link: LinkItem; accent: string })
           </span>
         )}
       </span>
-      <button
-        onClick={handleBookmarkClick}
-        aria-label={isBookmarked ? "Hapus bookmark" : "Simpan bookmark"}
-        className="focus-ring shrink-0 rounded-lg p-1.5 text-white/25 transition hover:bg-white/[0.06] hover:text-gilt-400"
-      >
-        <Bookmark
-          size={15}
-          fill={isBookmarked ? "currentColor" : "none"}
-          className={isBookmarked ? "text-gilt-400" : ""}
-        />
-      </button>
+      {isLoggedIn && (
+        <button
+          onClick={handleBookmarkClick}
+          aria-label={isBookmarked ? "Hapus bookmark" : "Simpan bookmark"}
+          className="focus-ring shrink-0 rounded-lg p-1.5 text-white/25 transition hover:bg-white/[0.06] hover:text-gilt-400"
+        >
+          <Bookmark
+            size={15}
+            fill={isBookmarked ? "currentColor" : "none"}
+            className={isBookmarked ? "text-gilt-400" : ""}
+          />
+        </button>
+      )}
     </a>
   );
 }

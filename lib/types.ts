@@ -44,6 +44,7 @@ export type User = {
   is_premium: boolean;
   premium_plan: PremiumPlan | null;
   premium_expires_at: string | null;
+  free_link_opens: number;
   created_at: string;
   updated_at: string;
 };

@@ -14,6 +14,7 @@ create table if not exists users (
   is_premium boolean not null default false,
   premium_plan text check (premium_plan in ('monthly', 'lifetime')),
   premium_expires_at timestamptz, -- null jika plan = lifetime atau belum premium
+  free_link_opens integer not null default 0, -- jumlah link yang sudah dibuka (user gratis, dibatasi)
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );

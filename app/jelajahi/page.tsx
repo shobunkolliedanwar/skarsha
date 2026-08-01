@@ -54,8 +54,8 @@ export default function JelajahiPage() {
           </p>
         </div>
 
-        <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-          <span className="focus-ring flex flex-1 items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2.5">
+        <div className="mb-6">
+          <span className="focus-ring flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2.5">
             <Search size={16} className="text-white/30" />
             <input
               value={query}
@@ -64,18 +64,32 @@ export default function JelajahiPage() {
               className="w-full bg-transparent text-white placeholder:text-white/25"
             />
           </span>
-          <select
-            value={activeCategory}
-            onChange={(e) => setActiveCategory(e.target.value)}
-            className="focus-ring rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2.5 text-sm text-white"
+        </div>
+
+        <div className="-mx-6 mb-8 flex gap-2 overflow-x-auto px-6 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <button
+            onClick={() => setActiveCategory("all")}
+            className={`focus-ring shrink-0 rounded-full px-3.5 py-1.5 text-sm transition ${
+              activeCategory === "all"
+                ? "bg-gilt-400 text-ink-950 font-medium"
+                : "border border-white/10 bg-white/[0.03] text-white/60 hover:text-white"
+            }`}
           >
-            <option value="all" className="bg-ink-850">Semua kategori</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id} className="bg-ink-850">
-                {c.name}
-              </option>
-            ))}
-          </select>
+            Semua
+          </button>
+          {categories.map((c) => (
+            <button
+              key={c.id}
+              onClick={() => setActiveCategory(c.id)}
+              className={`focus-ring shrink-0 rounded-full px-3.5 py-1.5 text-sm transition ${
+                activeCategory === c.id
+                  ? "bg-gilt-400 text-ink-950 font-medium"
+                  : "border border-white/10 bg-white/[0.03] text-white/60 hover:text-white"
+              }`}
+            >
+              {c.name}
+            </button>
+          ))}
         </div>
 
         <div className="-mx-6">

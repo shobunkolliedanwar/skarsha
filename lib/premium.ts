@@ -1,5 +1,8 @@
 import type { User } from "./types";
 
+/** Batas jumlah link yang boleh dibuka user gratis (seumur akun, bukan per hari). */
+export const FREE_LINK_LIMIT = 3;
+
 /**
  * Menentukan apakah user benar-benar premium saat ini.
  * Plan "lifetime" selalu premium selama is_premium true.
